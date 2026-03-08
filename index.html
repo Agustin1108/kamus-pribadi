@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Pribadi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        header h1 span { color: #ffa726; }
+
+        header p {
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* Search */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 42px;
+            background: rgba(20,20,20,0.9);
+            border: 1px solid rgba(255,167,38,0.2);
+            border-radius: 12px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus { border-color: #ffa726; }
+
+        .search-box input::placeholder { color: #555; }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Add form */
+        .add-form {
+            background: rgba(20,20,20,0.9);
+            border: 1px solid rgba(255,167,38,0.2);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .add-form h3 {
+            font-size: 14px;
+            color: #ffa726;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .add-form input, .add-form textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(10,10,10,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .add-form input:focus, .add-form textarea:focus {
+            border-color: rgba(255,167,38,0.4);
+        }
+
+        .add-form textarea { resize: vertical; min-height: 60px; }
+
+        .add-form .btn-row {
+            display: flex; gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ffa726;
+            color: #0a0a0a;
+        }
+
+        .btn-primary:hover { background: #ffb74d; }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: #aaa;
+        }
+
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+        .btn-danger {
+            background: rgba(244,67,54,0.15);
+            color: #f44336;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+
+        .btn-danger:hover { background: rgba(244,67,54,0.25); }
+
+        .btn-edit {
+            background: rgba(255,167,38,0.1);
+            color: #ffa726;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+
+        .btn-edit:hover { background: rgba(255,167,38,0.2); }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            flex: 1;
+            background: rgba(20,20,20,0.9);
+            border: 1px solid rgba(255,167,38,0.1);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffa726;
+        }
+
+        .stat .lbl {
+            font-size: 11px;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        /* Category filter */
+        .categories {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .cat-tag {
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid rgba(255,167,38,0.2);
+            background: transparent;
+            color: #999;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cat-tag:hover, .cat-tag.active {
+            background: rgba(255,167,38,0.15);
+            color: #ffa726;
+            border-color: #ffa726;
+        }
+
+        /* Word list */
+        .word-list { margin-bottom: 30px; }
+
+        .word-card {
+            background: rgba(20,20,20,0.9);
+            border: 1px solid rgba(255,167,38,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .word-card:hover { border-color: rgba(255,167,38,0.3); }
+
+        .word-card .word-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .word-card .term {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .word-card .cat {
+            font-size: 10px;
+            background: rgba(255,167,38,0.1);
+            color: #ffa726;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .word-card .definition {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .word-card .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .word-card .date {
+            font-size: 10px;
+            color: #555;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .empty .emoji { font-size: 36px; margin-bottom: 10px; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #444;
+        }
+
+        footer a { color: #ffa726; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📖 Kamus <span>Pribadi</span></h1>
+            <p>Catat istilah, perkaya wawasan</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="num" id="totalWords">0</div>
+                <div class="lbl">Istilah</div>
+            </div>
+            <div class="stat">
+                <div class="num" id="totalCats">0</div>
+                <div class="lbl">Kategori</div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Cari istilah atau definisi..." oninput="renderWords()">
+        </div>
+
+        <div class="categories" id="catFilter"></div>
+
+        <div class="add-form">
+            <h3 id="formTitle">➕ Tambah Istilah Baru</h3>
+            <input type="text" id="termInput" placeholder="Istilah">
+            <textarea id="defInput" placeholder="Definisi"></textarea>
+            <input type="text" id="catInput" placeholder="Kategori (misal: Filsafat, Coding, Umum)">
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="saveWord()">Simpan</button>
+                <button class="btn btn-secondary" onclick="cancelEdit()">Batal</button>
+            </div>
+            <input type="hidden" id="editIndex" value="-1">
+        </div>
+
+        <div class="word-list" id="wordList"></div>
+
+        <footer>
+            🕯️ Dibuat oleh <a href="https://agus-profile.vercel.app" target="_blank">Agus</a>
+        </footer>
+    </div>
+
+    <script>
+        function getData() {
+            return JSON.parse(localStorage.getItem('kamus') || '[]');
+        }
+
+        function setData(data) {
+            localStorage.setItem('kamus', JSON.stringify(data));
+        }
+
+        function saveWord() {
+            const term = document.getElementById('termInput').value.trim();
+            const def = document.getElementById('defInput').value.trim();
+            const cat = document.getElementById('catInput').value.trim() || 'Umum';
+            const editIdx = parseInt(document.getElementById('editIndex').value);
+
+            if (!term || !def) return alert('Istilah dan definisi wajib diisi!');
+
+            const data = getData();
+            const entry = {
+                term, definition: def, category: cat,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            if (editIdx >= 0) {
+                data[editIdx] = entry;
+            } else {
+                data.unshift(entry);
+            }
+
+            setData(data);
+            cancelEdit();
+            renderWords();
+        }
+
+        function deleteWord(idx) {
+            if (!confirm('Hapus istilah ini?')) return;
+            const data = getData();
+            data.splice(idx, 1);
+            setData(data);
+            renderWords();
+        }
+
+        function editWord(idx) {
+            const data = getData();
+            const w = data[idx];
+            document.getElementById('termInput').value = w.term;
+            document.getElementById('defInput').value = w.definition;
+            document.getElementById('catInput').value = w.category;
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('formTitle').textContent = '✏️ Edit Istilah';
+            document.getElementById('termInput').focus();
+        }
+
+        function cancelEdit() {
+            document.getElementById('termInput').value = '';
+            document.getElementById('defInput').value = '';
+            document.getElementById('catInput').value = '';
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('formTitle').textContent = '➕ Tambah Istilah Baru';
+        }
+
+        let activeCategory = '';
+
+        function setCategory(cat) {
+            activeCategory = activeCategory === cat ? '' : cat;
+            renderWords();
+        }
+
+        function renderWords() {
+            const data = getData();
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const list = document.getElementById('wordList');
+
+            // Stats
+            const cats = [...new Set(data.map(d => d.category))];
+            document.getElementById('totalWords').textContent = data.length;
+            document.getElementById('totalCats').textContent = cats.length;
+
+            // Category filter
+            const catFilter = document.getElementById('catFilter');
+            catFilter.innerHTML = cats.map(c =>
+                `<button class="cat-tag ${activeCategory === c ? 'active' : ''}" onclick="setCategory('${c.replace(/'/g, "\\'")}')">${c}</button>`
+            ).join('');
+
+            // Filter
+            const filtered = data.filter((w, i) => {
+                const matchSearch = !search ||
+                    w.term.toLowerCase().includes(search) ||
+                    w.definition.toLowerCase().includes(search);
+                const matchCat = !activeCategory || w.category === activeCategory;
+                return matchSearch && matchCat;
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="empty"><div class="emoji">📚</div>${data.length === 0 ? 'Belum ada istilah. Mulai tambahkan!' : 'Tidak ditemukan.'}</div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map((w, i) => {
+                const realIdx = data.indexOf(w);
+                return `<div class="word-card">
+                    <div class="word-header">
+                        <span class="term">${esc(w.term)}</span>
+                        <span class="cat">${esc(w.category)}</span>
+                    </div>
+                    <p class="definition">${esc(w.definition)}</p>
+                    <div class="word-header">
+                        <span class="date">${w.date}</span>
+                        <div class="actions">
+                            <button class="btn btn-edit" onclick="editWord(${realIdx})">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteWord(${realIdx})">Hapus</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function esc(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        renderWords();
+    </script>
+</body>
+</html>
